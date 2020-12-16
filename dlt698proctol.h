@@ -45,6 +45,10 @@ public:
 
     static void baseDecode(const vector<BYTE> &res, size_t &pos, uint8_t &netbyte);
 
+    static void baseEncode(vector<BYTE> &res, uint64_t netllong);
+
+    static void baseDecode(const vector<BYTE> &res, size_t &pos, uint64_t &netllong);
+
 };
 
 #endif // DLT698PROCTOL_H

@@ -3,8 +3,7 @@
 
 Dlt698Data::Dlt698Data(eDataType type) : eTyp(type)
 {
-    this->byDat = vector<BYTE>();
-    this->childs = vector<shared_ptr<Dlt698Data> >();
+
 }
 
 void Dlt698Data::decode(const vector<BYTE> &res, size_t &pos)
@@ -18,17 +17,23 @@ void Dlt698Data::decode(const vector<BYTE> &res, size_t &pos)
     case t_structure:
     case t_array:
     {
+        QList<Dlt698Data> var;
+        Dlt698Data child;
         BYTE num = res.at(pos ++);
-        for(int i = 0;i < num;i ++)
+        while(num --)
         {
-            shared_ptr<Dlt698Data> child(new Dlt698Data());
-            child->decode(res, pos);
-            this->childs.push_back(child);
+            child.decode(res, pos);
+            var.append(child);
         }
+        m_data.setValue(var);
     }
         break;
     case t_bool:
-        this->vectorCopy(res, pos, this->byDat, sizeof(bool_c));
+    {
+        uint8_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(static_cast<bool_c>(var));
+    }
         break;
     case t_utf8_string:
 
@@ -39,44 +44,90 @@ void Dlt698Data::decode(const vector<BYTE> &res, size_t &pos)
     case t_bit_string:
     {
         BYTE num = res.at(pos ++);
-        this->vectorCopy(res, pos, this->byDat, sizeof(bit_string_c) * num);
+        QString var(num);
+        this->baseDecode(res, pos, var.data(), num);
+        m_data.setValue(var);
     }
         break;
     case t_double_long:
-        this->vectorCopy(res, pos, this->byDat, sizeof(double_long_c));
+    {
+        uint32_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(static_cast<double_long_c>(var));
+    }
         break;
     case t_double_long_unsigned:
-        this->vectorCopy(res, pos, this->byDat, sizeof(double_long_unsigned_c));
+    {
+        uint32_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(static_cast<double_long_unsigned_c>(var));
+    }
         break;
     case t_bcd:
 
         break;
     case t_integer:
-        this->vectorCopy(res, pos, this->byDat, sizeof(integer_c));
+    {
+        uint8_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(static_cast<integer_c>(var));
+    }
         break;
     case t_long:
-        this->vectorCopy(res, pos, this->byDat, sizeof(long_c));
+    {
+        uint16_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(static_cast<double_long_c>(var));
+    }
         break;
     case t_unsigned:
-        this->vectorCopy(res, pos, this->byDat, sizeof(unsigned_c));
+    {
+        uint8_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(static_cast<unsigned_c>(var));
+    }
         break;
     case t_long_unsigned:
-        this->vectorCopy(res, pos, this->byDat, sizeof(t_long64_unsigned));
+    {
+        uint16_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(static_cast<long_unsigned_c>(var));
+    }
         break;
     case t_long64:
-        this->vectorCopy(res, pos, this->byDat, sizeof(long64_c));
+    {
+        uint64_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(static_cast<long long>(var));
+    }
         break;
     case t_long64_unsigned:
-        this->vectorCopy(res, pos, this->byDat, sizeof(long64_unsigned_c));
+    {
+        uint64_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(static_cast<unsigned long long>(var));
+    }
         break;
     case t_date_time:
-        this->vectorCopy(res, pos, this->byDat, 10);
+    {
+        Dlt698DateTime var;
+        var.decode(res, pos);
+        m_data = QVariant::fromValue(var);
+    }
         break;
     case t_datetime_s:
-        this->vectorCopy(res, pos, this->byDat, 7);
+    {
+        Dlt698DateTimeS var;
+        var.decode(res, pos);
+        m_data = QVariant::fromValue(var);
+    }
         break;
     case t_enum:
-        this->vectorCopy(res, pos, this->byDat, sizeof(BYTE));
+    {
+        uint8_t var;
+        this->baseDecode(res, pos, var);
+        m_data.setValue(var);
+    }
         break;
     default:
         break;
@@ -86,24 +137,24 @@ void Dlt698Data::decode(const vector<BYTE> &res, size_t &pos)
 void Dlt698Data::encode(vector<BYTE> &res)
 {
     res.push_back((BYTE)this->eTyp);
-
-    size_t pos = 0;
     switch (this->eTyp) {
     case t_null:
         break;
     case t_structure:
     case t_array:
     {
-        int num = this->childs.size();
-        res.push_back(num);
-        for(auto &k : this->childs)
+        QList<Dlt698Data> var = m_data.value<QList<Dlt698Data>>();
+        res.push_back(var.size());
+        for(auto &k : var)
         {
-            k->encode(res);
+            k.encode(res);
         }
     }
         break;
     case t_bool:
-        this->vectorCopy(this->byDat, pos, res, sizeof(bool_c));
+    {
+        this->baseEncode(res, static_cast<uint8_t>(m_data.toBool()));
+    }
         break;
     case t_utf8_string:
 
@@ -113,45 +164,45 @@ void Dlt698Data::encode(vector<BYTE> &res)
 
     case t_bit_string:
     {
-        BYTE num = res.at(pos ++);
-        this->baseEncode(res, &num, sizeof(BYTE));
-        this->vectorCopy(this->byDat, pos, res, sizeof(bit_string_c) * num);
+        QString var = m_data.toString();
+        this->baseEncode(res, static_cast<uint8_t>(var.size()));
+        this->baseEncode(res, var.data(), var.size());
     }
         break;
     case t_double_long:
-        this->vectorCopy(this->byDat, pos, res, sizeof(double_long_c));
+        this->baseEncode(res, static_cast<uint32_t>(m_data.toInt()));
         break;
     case t_double_long_unsigned:
-        this->vectorCopy(this->byDat, pos, res, sizeof(double_long_unsigned_c));
+        this->baseEncode(res, static_cast<uint32_t>(m_data.toUInt()));
         break;
     case t_bcd:
 
         break;
     case t_integer:
-        this->vectorCopy(this->byDat, pos, res, sizeof(integer_c));
+        this->baseEncode(res, static_cast<uint8_t>(m_data.toInt()));
         break;
     case t_long:
-        this->vectorCopy(this->byDat, pos, res, sizeof(long_c));
+        this->baseEncode(res, static_cast<uint16_t>(m_data.toInt()));
         break;
     case t_unsigned:
-        this->vectorCopy(this->byDat, pos, res, sizeof(unsigned_c));
+        this->baseEncode(res, static_cast<uint8_t>(m_data.toUInt()));
         break;
     case t_long_unsigned:
-        this->vectorCopy(this->byDat, pos, res, sizeof(t_long64_unsigned));
+        this->baseEncode(res, static_cast<uint16_t>(m_data.toUInt()));
         break;
     case t_long64:
-        this->vectorCopy(this->byDat, pos, res, sizeof(long64_c));
+        this->baseEncode(res, static_cast<uint64_t>(m_data.toLongLong()));
         break;
     case t_long64_unsigned:
-        this->vectorCopy(this->byDat, pos, res, sizeof(long64_unsigned_c));
+        this->baseEncode(res, static_cast<uint64_t>(m_data.toULongLong()));
         break;
     case t_date_time:
-        this->vectorCopy(this->byDat, pos, res, 10);
+        m_data.value<Dlt698DateTime>().encode(res);
     case t_datetime_s:
-        this->vectorCopy(this->byDat, pos, res, 7);
+        m_data.value<Dlt698DateTimeS>().encode(res);
         break;
     case t_enum:
-        this->vectorCopy(this->byDat, pos, res, sizeof(BYTE));
+        this->baseEncode(res, static_cast<uint8_t>(m_data.toInt()));
         break;
     default:
         break;
@@ -168,59 +219,51 @@ void Dlt698Data::setETyp(const eDataType &value)
     eTyp = value;
 }
 
-vector<BYTE> Dlt698Data::getByDat() const
+QVariant Dlt698Data::getData() const
 {
-    return byDat;
+    return m_data;
 }
 
-void Dlt698Data::getByDat(void *dat, size_t &pos, size_t size)
+const QVariant &Dlt698Data::data() const
 {
-    if(this->byDat.size() <= 0)
-        return;
-    this->baseDecode(this->byDat, pos, dat, size);
+    return m_data;
 }
 
-void Dlt698Data::setByDat(const vector<BYTE> &value)
+QVariant &Dlt698Data::data()
 {
-    byDat = value;
+    return m_data;
 }
 
-void Dlt698Data::setByDat(const void *dat, size_t size)
+void Dlt698Data::setData(const QVariant &data)
 {
-    this->byDat.swap(*(new vector<BYTE>()));
-    this->baseEncode(this->byDat, dat, size);
+    m_data = data;
 }
 
-void Dlt698Data::addChild(shared_ptr<Dlt698Data> child)
+QList<Dlt698Data> Dlt698Data::toList() const
 {
-    this->childs.push_back(child);
+    if(m_data.canConvert<QList<Dlt698Data>>())
+        return m_data.value<QList<Dlt698Data>>();
+    return {};
 }
 
-shared_ptr<Dlt698Data> Dlt698Data::getChild(int id) const
+Dlt698DateTime Dlt698Data::toDateTime() const
 {
-    return this->childs.at(id);
+    if(m_data.canConvert<Dlt698DateTime>())
+        return m_data.value<Dlt698DateTime>();
+    return {};
 }
 
-void Dlt698Data::vectorCopy(const vector<BYTE> &res, size_t &pos, vector<BYTE> &aim, size_t size)
+Dlt698DateTimeS Dlt698Data::toDateTimeS() const
 {
-    aim.resize(aim.size() + size, 0);
-    this->baseDecode(res, pos, &aim[aim.size() - size], size);
-}
-
-size_t Dlt698Data::getChildsSize() const
-{
-    return this->childs.size();
+    if(m_data.canConvert<Dlt698DateTimeS>())
+        return m_data.value<Dlt698DateTimeS>();
+    return {};
 }
 
 string Dlt698Data::toString()
 {
     DltStringBuffer buffer;
     buffer.append("DATA类型", this->eTyp);
-    if(this->byDat.size() <= 0)
-        buffer.append("DATA数据", "");
-    else buffer.append("DATA数据", this->byteToString(&this->byDat[0], this->byDat.size()));
 
-    vector<shared_ptr<DltObject> > objects(this->childs.begin(), this->childs.end());
-    buffer.append("CHILDS", objects);
     return buffer.toString();
 }

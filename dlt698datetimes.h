@@ -1,6 +1,7 @@
 #ifndef DLT698DATETIMES_H
 #define DLT698DATETIMES_H
 
+#include <QObject>
 #include "dlt698proctol.h"
 
 class Dlt698DateTimeS : public Dlt698Proctol
@@ -47,5 +48,7 @@ private:
 public:
     string toString();
 };
+
+Q_DECLARE_METATYPE(Dlt698DateTimeS)
 
 #endif // DLT698DATETIMES_H

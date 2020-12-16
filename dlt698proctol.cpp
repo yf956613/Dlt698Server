@@ -81,14 +81,14 @@ void Dlt698Proctol::baseDecode(const vector<BYTE> &res, size_t &pos, void *data,
 
 void Dlt698Proctol::baseEncode(vector<BYTE> &res, uint16_t netshort)
 {
-    uint16_t buff = htons(netshort);
-    baseEncode(res, &buff, sizeof(uint16_t));
+    netshort = htons(netshort);
+    baseEncode(res, &netshort, sizeof(uint16_t));
 }
 
 void Dlt698Proctol::baseEncode(vector<BYTE> &res, uint32_t netlong)
 {
-    uint32_t buff = htonl(netlong);
-    baseEncode(res, &buff, sizeof(uint32_t));
+    netlong = htonl(netlong);
+    baseEncode(res, &netlong, sizeof(uint32_t));
 }
 
 void Dlt698Proctol::baseDecode(const vector<BYTE> &res, size_t &pos, uint16_t &netshort)
@@ -113,6 +113,26 @@ void Dlt698Proctol::baseEncode(vector<BYTE> &res, uint8_t netbyte)
 void Dlt698Proctol::baseDecode(const vector<BYTE> &res, size_t &pos, uint8_t &netbyte)
 {
     baseDecode(res, pos, &netbyte, sizeof(BYTE));
+}
+
+void Dlt698Proctol::baseEncode(vector<BYTE> &res, uint64_t netllong)
+{
+    if(__BYTE_ORDER == __LITTLE_ENDIAN)
+    {
+        netllong = (((unsigned long long )htonl((int)((netllong << 32) >> 32))) << 32) | (unsigned int)htonl((int)(netllong >> 32));
+    }
+    baseEncode(res, &netllong, sizeof(uint64_t));
+}
+
+void Dlt698Proctol::baseDecode(const vector<BYTE> &res, size_t &pos, uint64_t &netllong)
+{
+    uint64_t buff;
+    baseDecode(res, pos, &buff, sizeof(uint64_t));
+    if (__BYTE_ORDER == __LITTLE_ENDIAN)
+    {
+        netllong = (((unsigned long long )ntohl((int)((buff << 32) >> 32))) << 32) | (unsigned int)ntohl((int)(buff >> 32));
+    }
+    else netllong = buff;
 }
 
 

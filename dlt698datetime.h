@@ -3,6 +3,7 @@
 
 #include <time.h>
 #include <sys/time.h>
+#include <QObject>
 #include "dlt698proctol.h"
 
 class Dlt698DateTime : public Dlt698Proctol
@@ -57,5 +58,7 @@ private:
 public:
     virtual string toString() override;
 };
+
+Q_DECLARE_METATYPE(Dlt698DateTime)
 
 #endif // DLT698DATETIME_H

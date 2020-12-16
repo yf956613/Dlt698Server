@@ -3,6 +3,9 @@
 
 #include "dlt698proctol.h"
 #include "memory"
+#include "dlt698datetime.h"
+#include "dlt698datetimes.h"
+#include <QVariant>
 
 class Dlt698Data : public Dlt698Proctol
 {
@@ -17,26 +20,24 @@ public:
     eDataType getETyp() const;
     void setETyp(const eDataType &value);
 
-    vector<BYTE> getByDat() const;
-    void getByDat(void *dat, size_t &pos, size_t size);
+    QVariant getData() const;
+    const QVariant& data() const;
+    QVariant& data();
+    void setData(const QVariant &data);
 
-    void setByDat(const vector<BYTE> &value);
-    void setByDat(const void *dat, size_t size);
-
-    void addChild(shared_ptr<Dlt698Data> child);
-    shared_ptr<Dlt698Data> getChild(int id) const;
-
-    void vectorCopy(const vector<BYTE> &res, size_t &pos, vector<BYTE> &aim, size_t size);
-    size_t getChildsSize() const;
+    QList<Dlt698Data> toList() const;
+    Dlt698DateTime toDateTime() const;
+    Dlt698DateTimeS toDateTimeS() const;
 private:
     eDataType eTyp;
-    vector<BYTE> byDat;
-    vector<shared_ptr<Dlt698Data> > childs;
 
+    QVariant m_data;
 
     // DltObject interface
 public:
     string toString() override;
 };
+
+Q_DECLARE_METATYPE(Dlt698Data)
 
 #endif // DLT698DATA_H
