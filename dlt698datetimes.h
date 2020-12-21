@@ -1,13 +1,18 @@
 #ifndef DLT698DATETIMES_H
 #define DLT698DATETIMES_H
 
-#include <QObject>
-#include "dlt698proctol.h"
+#include "datatype/data.h"
 
-class Dlt698DateTimeS : public Dlt698Proctol
+class Dlt698DateTimeS : public Dlt698::Data
 {
 public:
-    Dlt698DateTimeS();
+    Dlt698DateTimeS(Data *parent = nullptr);
+
+    Dlt698DateTimeS(Dlt698::Data &other, Dlt698::Data *parent = nullptr);
+
+    Dlt698DateTimeS(Dlt698DateTimeS &other, Dlt698::Data *parent = nullptr);
+
+    Dlt698DateTimeS& operator=(const Dlt698DateTimeS& other);
 
     // Dlt698Proctol interface
 public:
@@ -47,8 +52,12 @@ private:
     // DltObject interface
 public:
     string toString();
-};
 
-Q_DECLARE_METATYPE(Dlt698DateTimeS)
+    // Data interface
+public:
+    virtual Dlt698::Data *clone(Data *parent) override;
+
+    virtual Dlt698::Data &operator =(Dlt698::Data &other) override;
+};
 
 #endif // DLT698DATETIMES_H

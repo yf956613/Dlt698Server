@@ -1,8 +1,40 @@
 #include "dlt698datetimes.h"
+#include <QString>
 
-Dlt698DateTimeS::Dlt698DateTimeS()
+Dlt698DateTimeS::Dlt698DateTimeS(Data *parent)
+    : Data(parent)
 {
+    this->setDataType(this->getTypeByName(typeid(*this).name()));
+}
 
+Dlt698DateTimeS::Dlt698DateTimeS(Dlt698::Data &other, Data *parent)
+    : Data(other, parent)
+{
+   *this = other;
+}
+
+Dlt698DateTimeS::Dlt698DateTimeS(Dlt698DateTimeS &other, Data *parent)
+    : Data(other, parent)
+{
+    *this = other;
+}
+
+Dlt698DateTimeS &Dlt698DateTimeS::operator=(const Dlt698DateTimeS &other)
+{
+    if(this == &other)
+        return *this;
+    this->year = other.year;
+    this->month = other.month;
+    this->day = other.day;
+    this->hour = other.hour;
+    this->minute = other.minute;
+    this->second = other.second;
+    return *this;
+}
+
+Dlt698::Data &Dlt698DateTimeS::operator=(Dlt698::Data &other)
+{
+    return Dlt698::dynamicCopy(*this, other);
 }
 
 void Dlt698DateTimeS::decode(const vector<BYTE> &res, size_t &pos)
@@ -90,8 +122,17 @@ void Dlt698DateTimeS::setDateTimeS(timeval &tv)
 
 string Dlt698DateTimeS::toString()
 {
-    string t = "";
-    t += to_string(this->year) + "-" + to_string(this->month) + "-" + to_string(this->day) + " ";
-    t += to_string(this->hour) + ":" + to_string(this->minute) + ":" + to_string(this->second);
-    return t;
+    return QString("%1-%2-%3 %4:%5:%6")
+            .arg(this->year, 4, 10, QLatin1Char('0'))
+            .arg(this->month, 2, 10, QLatin1Char('0'))
+            .arg(this->day, 2, 10, QLatin1Char('0'))
+            .arg(this->hour, 2, 10, QLatin1Char('0'))
+            .arg(this->minute, 2, 10, QLatin1Char('0'))
+            .arg(this->second, 2, 10, QLatin1Char('0'))
+            .toStdString();
+}
+
+Dlt698::Data *Dlt698DateTimeS::clone(Data *parent)
+{
+    return new Dlt698DateTimeS(*this, parent);
 }

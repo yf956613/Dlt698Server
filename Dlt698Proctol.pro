@@ -49,7 +49,11 @@ SOURCES += dlt698proctol.cpp \
     dlt698connectresponseinfo.cpp \
     dlt698randnum.cpp \
     dlt698getresponsenormal.cpp \
-    dlt698getresponsenormallist.cpp
+    dlt698getresponsenormallist.cpp \
+    datatype/data.cpp \
+    datatype/datafactory.cpp \
+    datatype/datastruct.cpp \
+    datatype/dataarray.cpp
 
 HEADERS += dlt698proctol.h\
         dlt698proctol_global.h \
@@ -91,7 +95,12 @@ HEADERS += dlt698proctol.h\
     dlt698connectresponseinfo.h \
     dlt698randnum.h \
     dlt698getresponsenormal.h \
-    dlt698getresponsenormallist.h
+    dlt698getresponsenormallist.h \
+    datatype/data.h \
+    datatype/databasic.h \
+    datatype/datafactory.h \
+    datatype/datastruct.h \
+    datatype/dataarray.h
 
 unix {
     target.path = /usr/lib

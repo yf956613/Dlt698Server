@@ -7,7 +7,6 @@
 #include "dltobject.h"
 #include <vector>
 #include <string.h>
-#include <arpa/inet.h>
 
 using namespace std;
 
@@ -33,22 +32,29 @@ public:
 
     static void baseDecode(const vector<BYTE> &res, size_t &pos, void *data, size_t size);
 
-    static void baseEncode(vector<BYTE> &res, uint16_t netshort);
+    template<typename T>
+    static void baseEncode(vector<BYTE> &res, T data);
 
-    static void baseEncode(vector<BYTE> &res, uint32_t netlong);
-
-    static void baseDecode(const vector<BYTE> &res, size_t &pos, uint16_t &netshort);
-
-    static void baseDecode(const vector<BYTE> &res, size_t &pos, uint32_t &netlong);
-
-    static void baseEncode(vector<BYTE> &res, uint8_t netbyte);
-
-    static void baseDecode(const vector<BYTE> &res, size_t &pos, uint8_t &netbyte);
-
-    static void baseEncode(vector<BYTE> &res, uint64_t netllong);
-
-    static void baseDecode(const vector<BYTE> &res, size_t &pos, uint64_t &netllong);
+    template<typename T>
+    static void baseDecode(const vector<BYTE> &res, size_t &pos, T &data);
 
 };
+
+template<typename T>
+void Dlt698Proctol::baseDecode(const vector<BYTE> &res, size_t &pos, T &data)
+{
+    T temp;
+    baseDecode(res, pos, &temp, sizeof(T));
+    nhSwap(&temp, sizeof(T));
+    data = temp;
+}
+
+template<typename T>
+void Dlt698Proctol::baseEncode(vector<BYTE> &res, T data)
+{
+    T temp = data;
+    nhSwap(&temp, sizeof(T));
+    baseEncode(res, &temp, sizeof(T));
+}
 
 #endif // DLT698PROCTOL_H

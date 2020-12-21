@@ -36,7 +36,7 @@ typedef BYTE		unsigned_c;
 typedef WORD		long_unsigned_c;
 typedef LONG64		long64_c;
 typedef ULONG64		long64_unsigned_c;
-//typedef enum		enum_c;
+typedef BYTE		enum_c;
 typedef float		float32_c ;
 typedef double		float64_c ;
 
