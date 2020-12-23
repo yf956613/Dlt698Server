@@ -10,18 +10,13 @@ class ReportNotificationRecordListBuilder : public ReportNotificationBuilder
 {
 public:
     ReportNotificationRecordListBuilder();
+    ReportNotificationRecordListBuilder(shared_ptr<Dlt698Apdu> apdu);
 
-    ReportNotificationRecordListBuilder* piid(const shared_ptr<Dlt698PiidAcd> &value);
+    shared_ptr<Dlt698GetResponseRecordList> records() const;
+    void setRecords(const shared_ptr<Dlt698GetResponseRecordList> &records);
 
-    ReportNotificationRecordListBuilder* resultRecords(const vector<shared_ptr<ResultRecord> > &value);
-
-    shared_ptr<Dlt698GetResponseRecordList> recordsBuild();
-
-    // ReportNotificationBuilder interface
-protected:
-    vector<BYTE> notificationBodyBuild() override final;
-
-    shared_ptr<Dlt698GetResponseRecordList> records;
+private:
+    shared_ptr<Dlt698GetResponseRecordList> m_records;
 };
 
 

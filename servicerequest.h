@@ -1,7 +1,7 @@
 #ifndef SERVICEREQUEST_H
 #define SERVICEREQUEST_H
 
-#include "dlt698apdu.h"
+#include "apdu/dlt698apdu.h"
 
 namespace Dlt698 {
 

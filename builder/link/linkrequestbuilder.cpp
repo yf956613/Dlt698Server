@@ -4,43 +4,26 @@ using namespace Dlt698;
 
 LinkRequestBuilder::LinkRequestBuilder()
 {
-    this->linkRequest = shared_ptr<Dlt698LinkRequest>(new Dlt698LinkRequest());
-    this->linkApdu->setSevType(LinkRequest);
+    shared_ptr<Dlt698CtrlDomain> ctrl = this->apdu()->getCtrl();
+    ctrl->setDIR(_SevSend);
 
-    shared_ptr<Dlt698CtrlDomain> ctrl = this->apdu->getCtrl();
-    ctrl->setDIR(1);
+    this->link()->setSevType(_LinkRequest);
+    m_request = dynamic_pointer_cast<Dlt698LinkRequest>(this->link()->getBody());
 }
 
-LinkRequestBuilder *LinkRequestBuilder::piid(const shared_ptr<Dlt698PiidAcd> &value)
+LinkRequestBuilder::LinkRequestBuilder(shared_ptr<Dlt698Apdu> apdu)
+    : LinkApduBuilder(apdu)
 {
-    this->linkRequest->setPiid(value);
-    return this;
+    if(this->link())
+    m_request = dynamic_pointer_cast<Dlt698LinkRequest>(this->link()->getBody());
 }
 
-LinkRequestBuilder *LinkRequestBuilder::linkRequestType(const _mLinkRequest::eReqTyp &value)
+shared_ptr<Dlt698LinkRequest> LinkRequestBuilder::request() const
 {
-    this->linkRequest->setSevType(value);
-    return this;
+    return m_request;
 }
 
-LinkRequestBuilder *LinkRequestBuilder::heartCycle(const long_unsigned_c &value)
+void LinkRequestBuilder::setRequest(const shared_ptr<Dlt698LinkRequest> &request)
 {
-    this->linkRequest->setHeartcycle(value);
-    return this;
-}
-
-LinkRequestBuilder *LinkRequestBuilder::reqTime(const shared_ptr<Dlt698DateTime> &value)
-{
-    this->linkRequest->setReqtime(value);
-    return this;
-}
-
-shared_ptr<Dlt698LinkRequest> LinkRequestBuilder::linkRequestBuild()
-{
-    return this->linkRequest;
-}
-
-vector<BYTE> LinkRequestBuilder::linkBodyBuild()
-{
-    return this->linkRequestBuild()->toBytes();
+    m_request = request;
 }

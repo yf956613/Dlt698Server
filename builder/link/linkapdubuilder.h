@@ -1,7 +1,7 @@
 #ifndef LINKAPDUBUILDER_H
 #define LINKAPDUBUILDER_H
 
-#include "apdubuilder.h"
+#include "builder/apdubuilder.h"
 #include "link/dlt698linkapdu.h"
 
 namespace Dlt698 {
@@ -10,20 +10,18 @@ class LinkApduBuilder : public ApduBuilder
 {
 public:
     LinkApduBuilder();
+    LinkApduBuilder(shared_ptr<Dlt698Apdu> apdu);
 
-    LinkApduBuilder* linktype(const eLinkAPDU &value);
 
-    LinkApduBuilder* linkBody(const vector<BYTE> &value);
+    shared_ptr<Dlt698LinkApdu> link() const;
+    void setLink(const shared_ptr<Dlt698LinkApdu> &link);
 
-    shared_ptr<Dlt698LinkApdu> linkBuild();
+private:
+    shared_ptr<Dlt698LinkApdu> m_link;
 
     // ApduBuilder interface
-protected:
-    vector<BYTE> asduBuild() override final;
-
-    virtual vector<BYTE> linkBodyBuild();
-
-    shared_ptr<Dlt698LinkApdu> linkApdu;
+public:
+    virtual vector<BYTE> asduBuild() override;
 };
 
 }

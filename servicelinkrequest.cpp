@@ -1,7 +1,8 @@
 #include "servicelinkrequest.h"
 #include "dlt698servicefactory.h"
-#include "dlt698linkrequest.h"
-#include "dlt698linkapdu.h"
+#include "link/dlt698linkrequest.h"
+#include "link/dlt698linkapdu.h"
+#include "builder/link/linkrequestbuilder.h"
 
 #include <QDebug>
 
@@ -9,7 +10,7 @@ using namespace Dlt698;
 
 ServiceLinkRequest::ServiceLinkRequest()
 {
-    WORD type = this->getServiceType(LinkRequest);
+    WORD type = this->getServiceType(_LinkRequest);
     Dlt698ServiceFactory::instance()->setService(type, this);
 }
 
@@ -17,14 +18,7 @@ void ServiceLinkRequest::doService(ServiceRequest &request, ServiceResponse &res
 {
     qDebug() << "LinkRequest: 01";
 
-    size_t pos;
-    Dlt698LinkApdu apdu;
-    pos = 0;
-    apdu.decode(request.getApdu()->getByASDU(), pos);
+    LinkRequestBuilder builder(request.getApdu());
 
-    Dlt698LinkRequest req;
-    pos = 0;
-    req.decode(apdu.getBody(), pos);
-
-    qDebug() << QString::fromStdString(req.toHexString());
+    qDebug() << QString::fromStdString(builder.apdu()->toHexString());
 }

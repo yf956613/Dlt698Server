@@ -10,9 +10,12 @@ class ConnectResponseBuilder : public ServerBuilder
 {
 public:
     ConnectResponseBuilder();
+    ConnectResponseBuilder(shared_ptr<Dlt698Apdu> apdu);
 
+    shared_ptr<Dlt698ConnectResponse> response() const;
+    void setResponse(const shared_ptr<Dlt698ConnectResponse> &response);
 
-  private:
+private:
     shared_ptr<Dlt698ConnectResponse> m_response;
 };
 

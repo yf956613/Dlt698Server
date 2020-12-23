@@ -1,15 +1,15 @@
 #include "servicereportnotificationnormallist.h"
 #include "dlt698servicefactory.h"
-#include "dlt698reportnotification.h"
-#include "dlt698serverapdu.h"
-#include "dlt698getresponsenormallist.h"
+#include "server/report/dlt698reportnotification.h"
+#include "server/dlt698serverapdu.h"
+#include "server/get/dlt698getresponsenormallist.h"
 #include <QDebug>
 
 using namespace Dlt698;
 
 ServiceReportNotificationNormalList::ServiceReportNotificationNormalList()
 {
-    WORD type = this->getServiceType(ReportNotification, _mReportNotification::ReportNotificationList);
+    WORD type = this->getServiceType(_ReportNotification, _ReportNotificationList);
     Dlt698ServiceFactory::instance()->setService(type, this);
 }
 
@@ -17,17 +17,9 @@ void ServiceReportNotificationNormalList::doService(ServiceRequest &request, Ser
 {
     qDebug() << "ReportNotificationList: 88 01";
 
-    size_t pos;
+    size_t pos = 0;
     Dlt698ServerApdu server;
-    pos = 0;
     server.decode(request.getApdu()->getByASDU(), pos);
 
-    Dlt698ReportNotification report;
-    pos = 0;
-    report.decode(server.getBody(), pos);
-
-    shared_ptr<Dlt698GetResponseNormalList> res(new Dlt698GetResponseNormalList());
-    pos = 0;
-    res->decode(report.getBody(), pos);
-    qDebug() << QString::fromStdString(res->toHexString());
+    qDebug() << QString::fromStdString(server.toHexString());
 }

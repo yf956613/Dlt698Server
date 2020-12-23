@@ -4,61 +4,26 @@ using namespace Dlt698;
 
 LinkResponseBuilder::LinkResponseBuilder()
 {
-    this->linkResponse = shared_ptr<Dlt698LinkResponse>(new Dlt698LinkResponse());
-    this->linkApdu->setSevType(LinkRespnose);
+    shared_ptr<Dlt698CtrlDomain> ctrl = this->apdu()->getCtrl();
+    ctrl->setDIR(_CliSend);
 
-    shared_ptr<Dlt698CtrlDomain> ctrl = this->apdu->getCtrl();
-    ctrl->setDIR(0);
+    this->link()->setSevType(_LinkResponse);
+    m_response = dynamic_pointer_cast<Dlt698LinkResponse>(this->link()->getBody());
 }
 
-LinkResponseBuilder *LinkResponseBuilder::piid(const shared_ptr<Dlt698Piid> &value)
+LinkResponseBuilder::LinkResponseBuilder(shared_ptr<Dlt698Apdu> apdu)
+    : LinkApduBuilder(apdu)
 {
-    this->linkResponse->setPiid(value);
-    return this;
+    if(this->link())
+    m_response = dynamic_pointer_cast<Dlt698LinkResponse>(this->link()->getBody());
 }
 
-LinkResponseBuilder *LinkResponseBuilder::requestTime(const shared_ptr<Dlt698DateTime> &value)
+shared_ptr<Dlt698LinkResponse> LinkResponseBuilder::response() const
 {
-    this->linkResponse->setRequestTime(value);
-    return this;
+    return m_response;
 }
 
-LinkResponseBuilder *LinkResponseBuilder::receiveTime(const shared_ptr<Dlt698DateTime> &value)
+void LinkResponseBuilder::setResponse(const shared_ptr<Dlt698LinkResponse> &response)
 {
-    this->linkResponse->setReceiveTime(value);
-    return this;
-}
-
-LinkResponseBuilder *LinkResponseBuilder::responseTime(const shared_ptr<Dlt698DateTime> &value)
-{
-    this->linkResponse->setResponseTime(value);
-    return this;
-}
-
-LinkResponseBuilder *LinkResponseBuilder::clock(const BYTE &value)
-{
-    this->linkResponse->setClock(value);
-    return this;
-}
-
-LinkResponseBuilder *LinkResponseBuilder::result(const BYTE &value)
-{
-    this->linkResponse->setRslt(value);
-    return this;
-}
-
-LinkResponseBuilder *LinkResponseBuilder::response(const BYTE &value)
-{
-    this->linkResponse->setRes(value);
-    return this;
-}
-
-shared_ptr<Dlt698LinkResponse> LinkResponseBuilder::linkResponseBuild()
-{
-    return this->linkResponse;
-}
-
-vector<BYTE> LinkResponseBuilder::linkBodyBuild()
-{
-    return this->linkResponseBuild()->toBytes();
+    m_response = response;
 }

@@ -56,7 +56,6 @@ void Dlt698CallService::doService(ServiceRequest &request, ServiceResponse &resp
         qDebug() << "帧解析失败";
         return;
     }
-    qDebug() << "帧解析成功";
     this->decrypt(apdu);
 
     Dlt698Service *service = this->findService(apdu);
@@ -64,6 +63,5 @@ void Dlt698CallService::doService(ServiceRequest &request, ServiceResponse &resp
     {
         return;
     }
-    qDebug() << "寻找服务成功";
     service->doService(request, response);
 }

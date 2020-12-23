@@ -10,28 +10,13 @@ class LinkResponseBuilder : public LinkApduBuilder
 {
 public:
     LinkResponseBuilder();
+    LinkResponseBuilder(shared_ptr<Dlt698Apdu> apdu);
 
-    LinkResponseBuilder* piid(const shared_ptr<Dlt698Piid> &value);
+    shared_ptr<Dlt698LinkResponse> response() const;
+    void setResponse(const shared_ptr<Dlt698LinkResponse> &response);
 
-    LinkResponseBuilder* requestTime(const shared_ptr<Dlt698DateTime> &value);
-
-    LinkResponseBuilder* receiveTime(const shared_ptr<Dlt698DateTime> &value);
-
-    LinkResponseBuilder* responseTime(const shared_ptr<Dlt698DateTime> &value);
-
-    LinkResponseBuilder* clock(const BYTE &value);
-
-    LinkResponseBuilder* result(const BYTE &value);
-
-    LinkResponseBuilder* response(const BYTE &value);
-
-    shared_ptr<Dlt698LinkResponse> linkResponseBuild();
-
-    // LinkApduBuilder interface
-protected:
-    vector<BYTE> linkBodyBuild() override final;
-
-    shared_ptr<Dlt698LinkResponse> linkResponse;
+private:
+    shared_ptr<Dlt698LinkResponse> m_response;
 };
 
 }

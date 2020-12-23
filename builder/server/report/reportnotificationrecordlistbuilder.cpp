@@ -4,28 +4,25 @@ using namespace Dlt698;
 
 ReportNotificationRecordListBuilder::ReportNotificationRecordListBuilder()
 {
-    this->records = shared_ptr<Dlt698GetResponseRecordList>(new Dlt698GetResponseRecordList());
-    this->notification->setSevType(_ReportNotificationRecordList);
+    this->report()->setSevType(_ReportNotificationRecordList);
+    m_records = dynamic_pointer_cast<Dlt698GetResponseRecordList>(this->report()->getBody());
 }
 
-ReportNotificationRecordListBuilder *ReportNotificationRecordListBuilder::piid(const shared_ptr<Dlt698PiidAcd> &value)
+ReportNotificationRecordListBuilder::ReportNotificationRecordListBuilder(shared_ptr<Dlt698Apdu> apdu)
+    : ReportNotificationBuilder(apdu)
 {
-    this->records->setPiid(value);
-    return this;
+    if(this->report())
+    m_records = dynamic_pointer_cast<Dlt698GetResponseRecordList>(this->report()->getBody());
 }
 
-ReportNotificationRecordListBuilder *ReportNotificationRecordListBuilder::resultRecords(const vector<shared_ptr<ResultRecord> > &value)
+shared_ptr<Dlt698GetResponseRecordList> ReportNotificationRecordListBuilder::records() const
 {
-    //this->records->setResults(value);
-    return this;
+    return m_records;
 }
 
-shared_ptr<Dlt698GetResponseRecordList> ReportNotificationRecordListBuilder::recordsBuild()
+void ReportNotificationRecordListBuilder::setRecords(const shared_ptr<Dlt698GetResponseRecordList> &records)
 {
-    return this->records;
+    m_records = records;
 }
 
-vector<BYTE> ReportNotificationRecordListBuilder::notificationBodyBuild()
-{
-    return this->recordsBuild()->toBytes();
-}
+

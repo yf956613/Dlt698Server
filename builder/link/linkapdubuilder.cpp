@@ -3,37 +3,33 @@
 using namespace Dlt698;
 
 LinkApduBuilder::LinkApduBuilder()
-{
-    this->linkApdu = shared_ptr<Dlt698LinkApdu>(new Dlt698LinkApdu());
-    shared_ptr<Dlt698CtrlDomain> ctrl = this->apdu->getCtrl();
-    ctrl->setPRM(0);
-    ctrl->setFunc(1);
+{    
+    shared_ptr<Dlt698CtrlDomain> ctrl = this->apdu()->getCtrl();
+    ctrl->setPRM(_SevStart);
+    ctrl->setFunc(_LinkManager);
+    m_link.reset(new Dlt698LinkApdu());
 }
 
-LinkApduBuilder *LinkApduBuilder::linktype(const eLinkAPDU &value)
+LinkApduBuilder::LinkApduBuilder(shared_ptr<Dlt698Apdu> apdu)
+    : ApduBuilder(apdu)
 {
-    this->linkApdu->setSevType(value);
-    return this;
+    m_link.reset(new Dlt698LinkApdu());
+
+    size_t pos = 0;
+    m_link->decode(apdu->getByASDU(), pos);
 }
 
-LinkApduBuilder *LinkApduBuilder::linkBody(const vector<BYTE> &value)
+shared_ptr<Dlt698LinkApdu> LinkApduBuilder::link() const
 {
-    this->linkApdu->setBody(value);
-    return this;
+    return m_link;
 }
 
-shared_ptr<Dlt698LinkApdu> LinkApduBuilder::linkBuild()
+void LinkApduBuilder::setLink(const shared_ptr<Dlt698LinkApdu> &link)
 {
-    this->linkApdu->setBody(this->linkBodyBuild());
-    return this->linkApdu;
+    m_link = link;
 }
 
 vector<BYTE> LinkApduBuilder::asduBuild()
 {
-    return this->linkBuild()->toBytes();
-}
-
-vector<BYTE> LinkApduBuilder::linkBodyBuild()
-{
-    return this->linkApdu->getBody();
+    return m_link->toBytes();
 }

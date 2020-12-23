@@ -10,22 +10,13 @@ class LinkRequestBuilder : public LinkApduBuilder
 {
 public:
     LinkRequestBuilder();
+    LinkRequestBuilder(shared_ptr<Dlt698Apdu> apdu);
 
-    LinkRequestBuilder* piid(const shared_ptr<Dlt698PiidAcd> &value);
+    shared_ptr<Dlt698LinkRequest> request() const;
+    void setRequest(const shared_ptr<Dlt698LinkRequest> &request);
 
-    LinkRequestBuilder* linkRequestType(const _mLinkRequest::eReqTyp &value);
-
-    LinkRequestBuilder* heartCycle(const long_unsigned_c &value);
-
-    LinkRequestBuilder* reqTime(const shared_ptr<Dlt698DateTime> &value);
-
-    shared_ptr<Dlt698LinkRequest> linkRequestBuild();
-
-    // LinkApduBuilder interface
-protected:
-    vector<BYTE> linkBodyBuild() override final;
-
-    shared_ptr<Dlt698LinkRequest> linkRequest;
+private:
+    shared_ptr<Dlt698LinkRequest> m_request;
 };
 
 }

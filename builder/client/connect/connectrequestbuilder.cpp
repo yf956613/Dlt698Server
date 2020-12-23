@@ -6,14 +6,16 @@ ConnectRequestBuilder::ConnectRequestBuilder()
 {
     shared_ptr<Dlt698CtrlDomain> ctrl = this->apdu()->getCtrl();
     ctrl->setPRM(_CliStart);
-    m_request = dynamic_pointer_cast<Dlt698ConnectRequest>(this->link()->getBody());
+
+    this->client()->setSevType(_ConnectRequest);
+    m_request = dynamic_pointer_cast<Dlt698ConnectRequest>(this->client()->getBody());
 }
 
 ConnectRequestBuilder::ConnectRequestBuilder(shared_ptr<Dlt698Apdu> apdu)
     : ClientBuilder(apdu)
 {
-    this->client()->setSevType(_ConnectRequest);
-    m_request = dynamic_pointer_cast<Dlt698ConnectRequest>(this->link()->getBody());
+    if(this->client())
+    m_request = dynamic_pointer_cast<Dlt698ConnectRequest>(this->client()->getBody());
 }
 
 shared_ptr<Dlt698ConnectRequest> ConnectRequestBuilder::request() const
