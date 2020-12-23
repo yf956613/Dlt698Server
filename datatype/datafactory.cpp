@@ -8,6 +8,9 @@ DataFactory::DataFactory()
 {
     if(!m_dataMap.empty())
         return;
+
+    this->addData(t_datetime_s, new d_datetimes());
+
     this->addData(t_null, new Data());
 
     this->addData(t_structure, new d_struct());
@@ -23,8 +26,6 @@ DataFactory::DataFactory()
     this->addData(t_long64_unsigned, new d_ulong64());
     this->addData(t_bool, new d_bool());
     this->addData(t_enum, new d_enum());
-
-    this->addData(t_datetime_s, new d_datetimes());
 }
 
 DataFactory &Dlt698::DataFactory::instance()

@@ -1,27 +1,27 @@
-#include "datastruct.h"
+#include "struct.h"
 #include "datafactory.h"
 
 using namespace Dlt698;
 
-DataStruct::DataStruct(Data *parent)
+Struct::Struct(Data *parent)
     : Data(parent)
 {
     this->setDataType(this->getTypeByName(typeid(*this).name()));
 }
 
-DataStruct::DataStruct(DataStruct &other, Data *parent)
+Struct::Struct(Struct &other, Data *parent)
     : Data(other, parent)
 {
     *this = other;
 }
 
-DataStruct::DataStruct(Data &other, Data *parent)
+Struct::Struct(Data &other, Data *parent)
     : Data(other, parent)
 {
     *this = other;
 }
 
-DataStruct &DataStruct::operator =(const DataStruct &other)
+Struct &Struct::operator =(const Struct &other)
 {
     if(this == &other)
         return *this;
@@ -37,16 +37,16 @@ DataStruct &DataStruct::operator =(const DataStruct &other)
     return *this;
 }
 
-Data &DataStruct::operator =(Data &other)
+Data &Struct::operator =(Data &other)
 {
-    DataStruct* temp = dynamic_cast<DataStruct*>(&other);
+    Struct* temp = dynamic_cast<Struct*>(&other);
     if(temp != NULL) {
         *this = *temp;
     }
     return *this;
 }
 
-void DataStruct::decode(const vector<BYTE> &res, size_t &pos)
+void Struct::decode(const vector<BYTE> &res, size_t &pos)
 {
     BYTE num = res.at(pos ++);
     while(num --) {
@@ -54,7 +54,7 @@ void DataStruct::decode(const vector<BYTE> &res, size_t &pos)
     }
 }
 
-void DataStruct::encode(vector<BYTE> &res)
+void Struct::encode(vector<BYTE> &res)
 {
     list<Data*> childs = this->childs();
     BYTE num = childs.size();
@@ -64,7 +64,8 @@ void DataStruct::encode(vector<BYTE> &res)
     }
 }
 
-Data *DataStruct::clone(Data *parent)
+Data *Struct::clone(Data *parent)
 {
-    return new DataStruct(*this, parent);
+    return new Struct(*this, parent);
 }
+

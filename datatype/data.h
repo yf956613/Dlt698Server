@@ -1,5 +1,5 @@
-#ifndef DATA_H
-#define DATA_H
+#ifndef DLT698_DATA_H
+#define DLT698_DATA_H
 
 #include "dlt698proctol.h"
 #include <unordered_map>

@@ -1,17 +1,17 @@
-#ifndef DATASTRUCT_H
-#define DATASTRUCT_H
+#ifndef DLT698_STRUCT_H
+#define DLT698_STRUCT_H
 
 #include "data.h"
 
 namespace Dlt698 {
 
-class DataStruct : public Data
+class Struct : public Data
 {
 public:
-    DataStruct(Data *parent = nullptr);
-    DataStruct(DataStruct &other, Data *parent = nullptr);
-    DataStruct(Data &other, Data *parent = nullptr);
-    DataStruct& operator =(const DataStruct &other);
+    Struct(Data *parent = nullptr);
+    Struct(Struct &other, Data *parent = nullptr);
+    Struct(Data &other, Data *parent = nullptr);
+    Struct& operator =(const Struct &other);
 
     // Dlt698Proctol interface
 public:
@@ -27,5 +27,4 @@ public:
 
 }
 
-
-#endif // DATASTRUCT_H
+#endif // STRUCT_H

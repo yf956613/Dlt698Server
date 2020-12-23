@@ -1,19 +1,19 @@
-#ifndef DATABASIC_H
-#define DATABASIC_H
+#ifndef DLT698_BASIC_H
+#define DLT698_BASIC_H
 
 #include "data.h"
 
 namespace Dlt698 {
 
 template<typename T>
-class DataBasic : public Data
+class Basic : public Data
 {
 public:
-    DataBasic(Data *parent = nullptr);
-    DataBasic(DataBasic<T> &other, Data *parent = nullptr);
-    DataBasic(Data &other, Data *parent = nullptr);
-    DataBasic(const T &other);
-    DataBasic<T>& operator =(const DataBasic<T> &other);
+    Basic(Data *parent = nullptr);
+    Basic(Basic<T> &other, Data *parent = nullptr);
+    Basic(Data &other, Data *parent = nullptr);
+    Basic(const T &other);
+    Basic<T>& operator =(const Basic<T> &other);
 
     // Dlt698Proctol interface
 public:
@@ -35,35 +35,36 @@ public:
 
 
 template<typename T>
-DataBasic<T>::DataBasic(Data *parent)
+Basic<T>::Basic(Data *parent)
     : Data(parent)
 {
     this->setDataType(this->getTypeByName(typeid(*this).name()));
+    m_data = 0;
 }
 
 template<typename T>
-DataBasic<T>::DataBasic(DataBasic<T> &other, Data *parent)
+Basic<T>::Basic(Basic<T> &other, Data *parent)
     : Data(other, parent)
 {
     *this = other;
 }
 
 template<typename T>
-DataBasic<T>::DataBasic(Data &other, Data *parent)
+Basic<T>::Basic(Data &other, Data *parent)
     : Data(other, parent)
 {
     *this = other;
 }
 
 template<typename T>
-DataBasic<T>::DataBasic(const T &other)
+Basic<T>::Basic(const T &other)
     : Data()
 {
     m_data = other;
 }
 
 template<typename T>
-DataBasic<T> &DataBasic<T>::operator =(const DataBasic<T> &other)
+Basic<T> &Basic<T>::operator =(const Basic<T> &other)
 {
     if(this != &other)
         m_data = other.data();
@@ -71,41 +72,41 @@ DataBasic<T> &DataBasic<T>::operator =(const DataBasic<T> &other)
 }
 
 template<typename T>
-Data &DataBasic<T>::operator =(Data &other)
+Data &Basic<T>::operator =(Data &other)
 {
     return Dlt698::dynamicCopy(*this, other);
 }
 
 template<typename T>
-void DataBasic<T>::decode(const vector<BYTE> &res, size_t &pos)
+void Basic<T>::decode(const vector<BYTE> &res, size_t &pos)
 {
     this->baseDecode(res, pos, m_data);
 }
 
 template<typename T>
-void DataBasic<T>::encode(vector<BYTE> &res)
+void Basic<T>::encode(vector<BYTE> &res)
 {
     this->baseEncode(res, m_data);
 }
 
 template<typename T>
-T DataBasic<T>::data() const
+T Basic<T>::data() const
 {
     return m_data;
 }
 
 template<typename T>
-void DataBasic<T>::setData(const T &data)
+void Basic<T>::setData(const T &data)
 {
     m_data = data;
 }
 
 template<typename T>
-Data *DataBasic<T>::clone(Data *parent)
+Data *Basic<T>::clone(Data *parent)
 {
-    return new DataBasic<T>(*this, parent);
+    return new Basic<T>(*this, parent);
 }
 
 }
 
-#endif // DATABASIC_H
+#endif // BASIC_H

@@ -38,7 +38,24 @@ public:
     template<typename T>
     static void baseDecode(const vector<BYTE> &res, size_t &pos, T &data);
 
+    template<typename T>
+    static void enumEncode(vector<BYTE> &res, T data);
+
+    template<typename T>
+    static void enumDecode(const vector<BYTE> &res, size_t &pos, T &data);
 };
+
+template<typename T>
+void Dlt698Proctol::enumDecode(const vector<BYTE> &res, size_t &pos, T &data)
+{
+    baseDecode(res, pos, &data, sizeof(BYTE));
+}
+
+template<typename T>
+void Dlt698Proctol::enumEncode(vector<BYTE> &res, T data)
+{
+    baseEncode(res, (BYTE)data);
+}
 
 template<typename T>
 void Dlt698Proctol::baseDecode(const vector<BYTE> &res, size_t &pos, T &data)

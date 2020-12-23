@@ -1,20 +1,19 @@
-#ifndef DATAARRAY_H
-#define DATAARRAY_H
+#ifndef DLT698_ARRAY_H
+#define DLT698_ARRAY_H
 
 #include "data.h"
-#include "databasic.h"
 
 namespace Dlt698 {
 
 template<typename T>
-class DataArray : public Data
+class Array : public Data
 {
 public:
-    DataArray(Data *parent = nullptr);
-    DataArray(Data &other, Data *parent = nullptr);
-    DataArray(DataArray<T> &other, Data *parent = nullptr);
-    DataArray<T>& operator =(const DataArray<T>& other);
-    DataArray<T>& operator =(DataArray<Data> &other);
+    Array(Data *parent = nullptr);
+    Array(Data &other, Data *parent = nullptr);
+    Array(Array<T> &other, Data *parent = nullptr);
+    Array<T>& operator =(const Array<T>& other);
+    Array<T>& operator =(Array<Data> &other);
 
     void addData(T *data);
     list<T *> data() const;
@@ -38,28 +37,28 @@ private:
 };
 
 template<typename T>
-DataArray<T>::DataArray(Data *parent)
+Array<T>::Array(Data *parent)
     : Data(parent)
 {
-    this->setDataType(this->getTypeByName(typeid(DataArray<Data>).name()));
+    this->setDataType(this->getTypeByName(typeid(Array<Data>).name()));
 }
 
 template<typename T>
-DataArray<T>::DataArray(Data &other, Data *parent)
+Array<T>::Array(Data &other, Data *parent)
     : Data(other, parent)
 {
     *this = other;
 }
 
 template<typename T>
-DataArray<T>::DataArray(DataArray<T> &other, Data *parent)
+Array<T>::Array(Array<T> &other, Data *parent)
     : Data(other, parent)
 {
     *this = other;
 }
 
 template<typename T>
-DataArray<T> &DataArray<T>::operator =(const DataArray<T> &other)
+Array<T> &Array<T>::operator =(const Array<T> &other)
 {
     if(this == &other)
         return *this;
@@ -74,7 +73,7 @@ DataArray<T> &DataArray<T>::operator =(const DataArray<T> &other)
 }
 
 template<typename T>
-DataArray<T> &DataArray<T>::operator =(DataArray<Data> &other)
+Array<T> &Array<T>::operator =(Array<Data> &other)
 {
     this->clear();
     list<Data *> childs = other.data();
@@ -87,9 +86,9 @@ DataArray<T> &DataArray<T>::operator =(DataArray<Data> &other)
 }
 
 template<typename T>
-Data &DataArray<T>::operator =(Data &other)
+Data &Array<T>::operator =(Data &other)
 {
-    DataArray<Data>* temp = dynamic_cast<DataArray<Data>*>(&other);
+    Array<Data>* temp = dynamic_cast<Array<Data>*>(&other);
     if(temp != NULL) {
         *this = *temp;
     }
@@ -97,27 +96,27 @@ Data &DataArray<T>::operator =(Data &other)
 }
 
 template<typename T>
-void DataArray<T>::addData(T *data)
+void Array<T>::addData(T *data)
 {
     data->setParent(this);
     m_data.push_back(data);
 }
 
 template<typename T>
-list<T *> DataArray<T>::data() const
+list<T *> Array<T>::data() const
 {
     return m_data;
 }
 
 template<typename T>
-void DataArray<T>::clear()
+void Array<T>::clear()
 {
     this->childsClear();
     m_data.clear();
 }
 
 template<typename T>
-void DataArray<T>::decode(const vector<BYTE> &res, size_t &pos)
+void Array<T>::decode(const vector<BYTE> &res, size_t &pos)
 {
     if(typeid(T) != typeid(Data))
         return;
@@ -129,7 +128,7 @@ void DataArray<T>::decode(const vector<BYTE> &res, size_t &pos)
 }
 
 template<typename T>
-void DataArray<T>::encode(vector<BYTE> &res)
+void Array<T>::encode(vector<BYTE> &res)
 {
     BYTE temp = m_data.size();
     this->baseEncode(res, temp);
@@ -139,11 +138,11 @@ void DataArray<T>::encode(vector<BYTE> &res)
 }
 
 template<typename T>
-Data *DataArray<T>::clone(Data *parent)
+Data *Array<T>::clone(Data *parent)
 {
-    return new DataArray<T>(*this, parent);
+    return new Array<T>(*this, parent);
 }
 
 }
 
-#endif // DATAARRAY_H
+#endif // ARRAY_H

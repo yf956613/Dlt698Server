@@ -2,28 +2,30 @@
 #define DATAFACTORY_H
 
 #include <unordered_map>
-#include "databasic.h"
-#include "datastruct.h"
-#include "dataarray.h"
-#include "dlt698datetimes.h"
+#include "basic.h"
+#include "struct.h"
+#include "array.h"
+#include "common/dlt698datetimes.h"
+#include "oad.h"
 
 namespace Dlt698 {
 
-typedef DataStruct d_struct;
-typedef DataArray<Data> d_array;
+typedef Struct d_struct;
+typedef Array<Data> d_array;
 
-typedef DataBasic<integer_c> d_int;
-typedef DataBasic<unsigned_c> d_uint;
-typedef DataBasic<long_c> d_long;
-typedef DataBasic<long_unsigned_c> d_ulong;
-typedef DataBasic<double_long_c> d_llong;
-typedef DataBasic<double_long_unsigned_c> d_ullong;
-typedef DataBasic<long64_c> d_long64;
-typedef DataBasic<long64_unsigned_c> d_ulong64;
-typedef DataBasic<bool_c> d_bool;
-typedef DataBasic<enum_c> d_enum;
+typedef Basic<integer_c> d_int;
+typedef Basic<unsigned_c> d_uint;
+typedef Basic<long_c> d_long;
+typedef Basic<long_unsigned_c> d_ulong;
+typedef Basic<double_long_c> d_llong;
+typedef Basic<double_long_unsigned_c> d_ullong;
+typedef Basic<long64_c> d_long64;
+typedef Basic<long64_unsigned_c> d_ulong64;
+typedef Basic<bool_c> d_bool;
+typedef Basic<enum_c> d_enum;
 
 typedef Dlt698DateTimeS d_datetimes;
+
 
 class DataFactory
 {
